@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI核心论文分类总表</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#333;padding:12px}
+        h1{text-align:center;font-size:1.4rem;margin:10px 0 4px;color:#1a1a2e}
+        .subtitle{text-align:center;color:#666;font-size:.82rem;margin-bottom:14px}
+        .stats-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}
+        .stat-card{background:#fff;border-radius:10px;padding:9px 16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08);min-width:90px}
+        .stat-card .num{font-size:1.35rem;font-weight:700}
+        .stat-card .label{font-size:.72rem;color:#888}
+        .s1 .num{color:#c0392b}.s2 .num{color:#d35400}.s3 .num{color:#27ae60}.s4 .num{color:#3498db}
+        .toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-bottom:10px}
+        .search-box input{padding:7px 14px;border:1.5px solid #ddd;border-radius:20px;font-size:.8rem;width:260px;max-width:60vw;outline:none;transition:border-color .2s}
+        .search-box input:focus{border-color:#5b6abf}
+        .toggle-btn{padding:7px 16px;border:2px solid #5b6abf;border-radius:20px;background:#fff;color:#5b6abf;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;user-select:none}
+        .toggle-btn:hover,.toggle-btn.active{background:#5b6abf;color:#fff}
+        .filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;justify-content:center}
+        .filter-group{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+        .filter-group label{font-size:.78rem;font-weight:600;color:#555;margin-right:3px}
+        .fbtn{padding:4px 11px;border:1.5px solid #ddd;border-radius:18px;background:#fff;font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+        .fbtn:hover{border-color:#999}.fbtn.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+        .table-container{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+        table{width:100%;border-collapse:collapse;font-size:.78rem}
+        thead th{background:#1a1a2e;color:#fff;padding:10px 8px;text-align:left;font-weight:600;position:sticky;top:0;z-index:10;white-space:nowrap}
+        tbody tr{border-bottom:1px solid #f0f0f0;transition:background .15s}
+        tbody tr:hover{background:#f8f9ff}
+        tbody td{padding:8px 7px;vertical-align:top;line-height:1.5}
+        .priority-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.7rem;font-weight:600;white-space:nowrap}
+        .p-f{background:#fde8e8;color:#c0392b}.p-b{background:#fef3e2;color:#d35400}.p-o{background:#e8f8e8;color:#27ae60}
+        .dir-tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.68rem;font-weight:500;white-space:nowrap}
+        .d-llm{background:#e8e0f0;color:#6c3483}.d-diff{background:#d5f5e3;color:#1e8449}.d-mm{background:#d6eaf8;color:#2471a3}
+        .d-aud{background:#fdebd0;color:#ca6f1e}.d-vid{background:#f9e0e0;color:#c0392b}.d-agent{background:#e0f0f0;color:#117a65}
+        .paper-title{font-weight:600;color:#1a1a2e}
+        .paper-link{color:#3498db;text-decoration:none;font-size:.75rem}
+        .paper-link:hover{text-decoration:underline}
+        .section-header td{background:#f0f1f5;font-weight:700;font-size:.88rem;padding:12px 8px 7px;color:#1a1a2e;border-bottom:2px solid #ddd}
+        .empty-state{text-align:center;padding:40px;color:#999;font-size:.88rem}
+        .ext{min-width:140px;max-width:210px;font-size:.73rem;color:#444;line-height:1.45;background:#fafbff}
+        .ext-head{background:#2c3e6b !important;color:#e8ecff !important;min-width:140px}
+        @media(max-width:768px){body{padding:4px}h1{font-size:1.1rem}table{font-size:.71rem}thead th,tbody td{padding:5px 4px}.stat-card{min-width:65px;padding:6px 8px}.stat-card .num{font-size:1.05rem}}
+    </style>
+</head>
+<body>
+<h1>📚 AI 核心论文分类总表</h1>
+<p class="subtitle">三级优先级 × 七大研究方向 · 共计 <span id="tot">0</span> 篇</p>
+<div class="stats-bar">
+    <div class="stat-card s1"><div class="num" id="c1">0</div><div class="label">范式奠基</div></div>
+    <div class="stat-card s2"><div class="num" id="c2">0</div><div class="label">关键突破</div></div>
+    <div class="stat-card s3"><div class="num" id="c3">0</div><div class="label">优化雕花</div></div>
+    <div class="stat-card s4"><div class="num" id="c4">0</div><div class="label">研究方向</div></div>
+</div>
+<div class="toolbar">
+    <div class="search-box"><input type="text" id="si" placeholder="🔍 搜索论文标题、作者、贡献…"></div>
+    <button class="toggle-btn" id="toggleBtn">📖 展开论文详情</button>
+</div>
+<div class="filters">
+    <div class="filter-group"><label>优先级：</label>
+        <button class="fbtn active" data-f="p" data-v="all">全部</button>
+        <button class="fbtn" data-f="p" data-v="范式奠基类">范式奠基</button>
+        <button class="fbtn" data-f="p" data-v="关键性突破">关键突破</button>
+        <button class="fbtn" data-f="p" data-v="优化雕花">优化雕花</button>
+    </div>
+    <div class="filter-group"><label>方向：</label>
+        <button class="fbtn active" data-f="d" data-v="all">全部</button>
+        <button class="fbtn" data-f="d" data-v="大语言模型">LLM</button>
+        <button class="fbtn" data-f="d" data-v="扩散模型/图像生成">扩散/图像</button>
+        <button class="fbtn" data-f="d" data-v="多模态/跨模态">多模态</button>
+        <button class="fbtn" data-f="d" data-v="声音生成">声音</button>
+        <button class="fbtn" data-f="d" data-v="视频生成">视频</button>
+        <button class="fbtn" data-f="d" data-v="AI Agent">Agent</button>
+    </div>
+</div>
+<div class="table-container">
+    <table id="mainTable">
+        <thead id="tableHead"></thead>
+        <tbody id="tb"></tbody>
+    </table>
+</div>
+
+<script>
+// 将数据用JSON.parse确保字符串安全
+const P = JSON.parse(`[
+{"p":"范式奠基类","d":"大语言模型","t":"Attention Is All You Need","a":"Vaswani et al. (Google)","y":2017,"c":"提出 Transformer 架构，奠定现代 LLM 基础","l":"https://arxiv.org/abs/1706.03762","q":"RNN/LSTM 串行计算无法并行化，长距离依赖建模困难","m":"纯注意力机制的 Transformer 架构，多头自注意力 + 位置编码替代循环结构","r":"在机器翻译上超越 RNN，训练速度大幅提升","b":"序列建模依赖 RNN/LSTM，训练速度慢且长距离信息严重衰减","f":"成为几乎所有后续 NLP/CV/Audio 模型的基础架构","x":"自注意力 O(n²) 复杂度，长序列受限；正弦位置编码表达力有限"},
+{"p":"范式奠基类","d":"大语言模型","t":"BERT: Pre-training of Deep Bidirectional Transformers","a":"Devlin et al. (Google)","y":2018,"c":"双向预训练+微调范式，NLP 任务 SOTA","l":"https://arxiv.org/abs/1810.04805","q":"语言模型仅能单向建模，无法充分利用上下文","m":"掩码语言模型 (MLM) + 下一句预测 (NSP) 双向预训练，再对下游任务微调","r":"在 11 项 NLP 基准上取得当时 SOTA","b":"GPT-1 等仅用单向语言模型，上下文利用不充分","f":"开创预训练+微调范式，深刻影响后续所有 NLP 研究","x":"仅编码器架构不适合生成任务；MLM 训练与推理不一致；NSP 作用有限"},
+{"p":"范式奠基类","d":"大语言模型","t":"Language Models are Unsupervised Multitask Learners (GPT-2)","a":"Radford et al. (OpenAI)","y":2019,"c":"证明大规模预训练的零样本能力","l":"","q":"语言模型的零样本泛化能力是否可行","m":"扩大模型规模至 1.5B 参数，纯自回归语言建模，不做任务微调","r":"在多项任务上展示零样本能力","b":"语言模型被认为需要针对每个任务单独微调","f":"证明规模化带来涌现能力，为 GPT-3 的 ICL 铺路","x":"模型规模有限，零样本性能不够实用；生成质量不稳定"},
+{"p":"范式奠基类","d":"大语言模型","t":"Language Models are Few-Shot Learners (GPT-3)","a":"Brown et al. (OpenAI)","y":2020,"c":"175B 参数，涌现 In-Context Learning 能力","l":"https://arxiv.org/abs/2005.14165","q":"少样本/零样本学习能否通过纯规模提升实现","m":"175B 参数模型，ICL 范式（提供少量示例即可完成任务）","r":"大量任务上展示强大少样本能力，部分接近或超越微调模型","b":"预训练模型仍需微调才能实用，成本高且灵活性差","f":"开创 ICL 范式，催生 Prompt Engineering 领域","x":"训练和推理成本极高；容易产生幻觉；ICL 表现不稳定"},
+{"p":"范式奠基类","d":"大语言模型","t":"Scaling Laws for Neural Language Models","a":"Kaplan et al. (OpenAI)","y":2020,"c":"建立参数/数据/算力的幂律缩放法则","l":"https://arxiv.org/abs/2001.08361","q":"如何最优地分配有限计算资源给模型规模和数据量","m":"系统实验测量模型性能与参数量、数据量、算力的关系，拟合幂律曲线","r":"性能与参数/数据/算力呈平滑幂律关系，预算分配存在最优策略","b":"大模型训练缺乏理论指导，资源分配靠经验和直觉","f":"为大模型训练提供可预测的缩放理论，指导后续所有大模型设计决策","x":"极端规模下幂律是否成立未验证；未充分考虑数据质量因素"},
+{"p":"范式奠基类","d":"扩散模型/图像生成","t":"Denoising Diffusion Probabilistic Models (DDPM)","a":"Ho et al. (UC Berkeley)","y":2020,"c":"扩散模型的标准化框架，奠定理论基础","l":"https://arxiv.org/abs/2006.11239","q":"扩散模型的理论框架和训练方法如何标准化","m":"将扩散过程参数化为马尔可夫链，通过变分下界优化并简化训练目标","r":"图像生成质量接近 GAN，训练稳定覆盖性好","b":"扩散模型训练不稳定，生成质量远不如 GAN","f":"建立扩散模型标准训练框架，催生后续所有扩散模型工作","x":"采样速度极慢（需上千步去噪）；计算成本高"},
+{"p":"范式奠基类","d":"扩散模型/图像生成","t":"Score-Based Generative Modeling through SDEs","a":"Song et al. (Stanford)","y":2021,"c":"连续时间扩散，统一理解框架","l":"https://arxiv.org/abs/2011.13456","q":"DDPM、SMLD 等不同扩散方法缺乏统一理论","m":"将扩散过程建模为 SDE，统一前向噪声和逆向去噪过程","r":"统一了 DDPM 和基于分数的方法，提出更灵活的采样策略","b":"扩散模型各方法独立发展，缺乏统一数学视角","f":"为扩散模型提供统一框架，启发 DPM-Solver 等高效采样方法","x":"数学形式复杂，实现门槛高；离散化误差仍影响质量"},
+{"p":"范式奠基类","d":"多模态/跨模态","t":"Learning Transferable Visual Models From Natural Language Supervision (CLIP)","a":"Radford et al. (OpenAI)","y":2021,"c":"对比学习连接视觉-语言，多模态基石","l":"https://arxiv.org/abs/2103.00020","q":"视觉模型需要大量标注数据，缺乏语义灵活性","m":"对比学习对齐 4 亿图文对的视觉和文本编码器","r":"零样本图像分类能力惊人，迁移性能强大","b":"视觉模型依赖有限的人工标注数据集训练","f":"连接视觉和语言的基石模型，被 DALL-E 2、SD 等广泛使用","x":"对复杂空间关系和计数理解差；训练数据偏见；对抗鲁棒性不足"},
+{"p":"范式奠基类","d":"多模态/跨模态","t":"An Image is Worth 16x16 Words: Transformers for Image Recognition (ViT)","a":"Dosovitskiy et al. (Google)","y":2021,"c":"Transformer 应用于纯视觉任务","l":"https://arxiv.org/abs/2010.11929","q":"Transformer 能否替代 CNN 用于图像识别","m":"将图像切分为 16x16 patches 作为 token 序列，用标准 Transformer 编码","r":"在大规模预训练后超越 CNN，可扩展性更好","b":"视觉领域由 CNN 主导，Transformer 被认为不适合视觉","f":"将 Transformer 引入视觉，催生统一架构趋势","x":"需大规模数据预训练；缺乏 CNN 的归纳偏置"},
+{"p":"范式奠基类","d":"声音生成","t":"WaveNet: A Generative Model for Raw Audio","a":"van den Oord et al. (DeepMind)","y":2016,"c":"自回归音频生成，高质量语音合成","l":"https://arxiv.org/abs/1609.03499","q":"传统 TTS 依赖拼接/参数合成，音质不自然","m":"因果膨胀卷积的自回归模型，逐采样点生成原始音频波形","r":"音频质量大幅超越传统方法，接近自然语音","b":"语音合成严重依赖手工特征和信号处理，有明显的机械感","f":"开创神经音频生成方向，奠定后续所有神经 TTS 基础","x":"自回归推理极慢，实时性差；计算成本很高"},
+{"p":"范式奠基类","d":"声音生成","t":"Tacotron: Towards End-to-End Speech Synthesis","a":"Wang et al. (Google)","y":2017,"c":"端到端 TTS 架构，序列到序列","l":"https://arxiv.org/abs/1703.10135","q":"TTS 流程复杂，需文本分析、声学模型、声码器等多阶段","m":"序列到序列架构，直接从字符序列生成 Mel 频谱图","r":"端到端训练可行，大幅简化 TTS 流水线","b":"TTS 系统需要复杂手工特征工程和多阶段级联","f":"开创端到端 TTS 范式，后续 Tacotron 2 进一步完善","x":"注意力对齐偶尔不稳定（跳词/重复）；仍需额外声码器"},
+{"p":"范式奠基类","d":"声音生成","t":"SoundStream: An End-to-End Neural Audio Codec","a":"Zeghidour et al. (Google)","y":2021,"c":"神经音频编解码器，VALL-E/AudioLM 基础组件","l":"https://arxiv.org/abs/2107.03312","q":"音频传输和存储需要高效的压缩编解码器","m":"编码器-量化器-解码器 + 残差矢量量化 (RVQ)，端到端训练","r":"极低比特率下音质超越传统编解码器","b":"传统编解码器依赖手工信号处理，低比特率质量差","f":"为 VALL-E、AudioLM 等离散 token 方法提供关键基础组件","x":"极低比特率下仍有失真；对罕见音频类型泛化有限"},
+{"p":"关键性突破","d":"大语言模型","t":"Training language models to follow instructions (InstructGPT)","a":"Ouyang et al. (OpenAI)","y":2022,"c":"RLHF 范式，解决对齐问题","l":"https://arxiv.org/abs/2203.02155","q":"语言模型输出不符合人类意图，可能有害或不真实","m":"三阶段 RLHF：监督微调 - 训练奖励模型 - PPO 强化学习","r":"1.3B InstructGPT 人类偏好优于 175B GPT-3","b":"大语言模型对齐问题缺乏系统方法论","f":"确立 RLHF 作为对齐标准范式，直接推动 ChatGPT 诞生","x":"奖励模型可被 hack；人工标注成本高；PPO 训练不稳定"},
+{"p":"关键性突破","d":"大语言模型","t":"Chain-of-Thought Prompting Elicits Reasoning in LLMs","a":"Wei et al. (Google)","y":2022,"c":"开创 CoT 推理范式，激发逐步推理能力","l":"https://arxiv.org/abs/2201.11903","q":"LLM 在数学、逻辑等推理任务上表现差","m":"在 prompt 中加入逐步推理示例，引导模型生成中间推理步骤","r":"在数学和常识推理任务上大幅提升性能","b":"Prompt 方法未利用逐步推理的能力","f":"开创推理增强范式，启发 Self-Consistency、ToT、DeepSeek-R1 等","x":"对小模型效果有限；推理链可能看似合理但结论错误"},
+{"p":"关键性突破","d":"大语言模型","t":"Constitutional AI: Harmlessness from AI Feedback","a":"Bai et al. (Anthropic)","y":2022,"c":"RLAIF，无需人工标注实现对齐","l":"https://arxiv.org/abs/2212.08073","q":"RLHF 依赖大量人类标注，昂贵且标注者不一致","m":"让 AI 基于宪法原则自我评判和修正回答 (RLAIF)","r":"减少人工标注需求同时保持对齐质量","b":"对齐方法完全依赖人类反馈，可扩展性差","f":"提出可扩展的自我对齐范式","x":"宪法原则的制定需人类判断；AI 自评可能有系统偏差"},
+{"p":"关键性突破","d":"大语言模型","t":"Retrieval-Augmented Generation (RAG)","a":"Lewis et al. (Meta)","y":2020,"c":"检索增强生成，解决知识更新与幻觉","l":"https://arxiv.org/abs/2005.11401","q":"LLM 知识静态过时，容易产生幻觉","m":"将 DPR 检索器与参数化生成模型结合，检索后生成","r":"在知识密集型任务上超越纯参数化模型","b":"参数化模型无法动态更新知识","f":"开创检索增强生成范式，成为解决幻觉的主流方案","x":"依赖检索质量；增加推理延迟"},
+{"p":"关键性突破","d":"大语言模型","t":"LLaMA: Open and Efficient Foundation Language Models","a":"Touvron et al. (Meta)","y":2023,"c":"开源高效 LLM，解决算力门槛","l":"https://arxiv.org/abs/2302.13971","q":"高性能 LLM 被闭源垄断，学术界缺乏可用基座","m":"公开数据训练 7B-65B，优化数据配比和训练流程","r":"LLaMA-13B 超越 GPT-3(175B)，65B 接近 PaLM-540B","b":"闭源模型垄断，学术研究受限于算力和数据门槛","f":"推动开源 LLM 生态爆发，催生 Alpaca、Vicuna 等大量衍生","x":"非聊天优化；早期许可证限制商业使用"},
+{"p":"关键性突破","d":"大语言模型","t":"GPT-4 Technical Report","a":"OpenAI","y":2023,"c":"多模态 LLM，推理能力质变","l":"https://arxiv.org/abs/2303.08774","q":"LLM 在复杂推理和多模态理解上仍有差距","m":"大规模多模态预训练（架构和数据未公开）","r":"在律师资格等专业考试中达到人类水平","b":"LLM 在专业推理和视觉理解薄弱","f":"证明多模态 LLM 巨大潜力，推动商业化","x":"技术细节完全不透明；仍有幻觉；成本高"},
+{"p":"关键性突破","d":"大语言模型","t":"DeepSeek-V2: A Strong, Economical, and Efficient MoE LM","a":"DeepSeek-AI","y":2024,"c":"MLA 注意力 + DeepSeekMoE，推理成本降至 1/5","l":"https://arxiv.org/abs/2405.04434","q":"大模型推理成本过高，KV 缓存和 FFN 效率低","m":"MLA 压缩 KV 缓存 + DeepSeekMoE 细粒度专家路由","r":"236B 参数仅激活 21B，性能匹配 LLaMA-70B","b":"注意力 KV 缓存占大量显存；MoE 路由粗粒度","f":"提出高效推理架构，证明架构创新可大幅降本","x":"MLA 实现复杂；稀疏激活某些任务不如稠密模型"},
+{"p":"关键性突破","d":"大语言模型","t":"DeepSeek-V3 Technical Report","a":"DeepSeek-AI","y":2024,"c":"671B MoE, FP8 训练, $5.576M 成本达 GPT-4o 水平","l":"https://arxiv.org/abs/2412.19437","q":"训练高性能大模型成本极高，MoE 负载不均","m":"671B MoE(37B激活) + FP8 + 无辅助损失负载均衡 + 多 token 预测","r":"$5.576M 达到 GPT-4o / Claude 3.5 Sonnet 水平","b":"训练成本动辄数千万美元；MoE 辅助损失与主任务冲突","f":"证明低成本也能训练顶尖模型，推动成本范式变革","x":"极端依赖工程优化和特定硬件；MoE 一致性不如稠密模型"},
+{"p":"关键性突破","d":"大语言模型","t":"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via RL","a":"DeepSeek-AI","y":2025,"c":"纯 RL(GRPO) 涌现推理能力，对标 OpenAI o1","l":"https://arxiv.org/abs/2501.12948","q":"LLM 推理能力难以通过预训练自然获得","m":"纯 RL(GRPO) 涌现 CoT(R1-Zero)；冷启动+多阶段 RL(R1)；蒸馏到小模型","r":"对标 o1，数学/代码推理大幅提升；蒸馏版同样优异","b":"推理提升主要靠 SFT 和人工 CoT，纯 RL 路径未验证","f":"证明推理能力可通过 RL 涌现，提出蒸馏推理的有效方案","x":"R1-Zero 可读性差；RL 训练不稳定，需精心设计奖励"},
+{"p":"关键性突破","d":"扩散模型/图像生成","t":"Diffusion Models Beat GANs on Image Synthesis","a":"Dhariwal & Nichol (OpenAI)","y":2021,"c":"超越 GAN，扩散模型成为主流","l":"https://arxiv.org/abs/2105.05233","q":"扩散模型图像质量仍不如 GAN","m":"架构改进 + 分类器引导 (Classifier Guidance)","r":"FID 首次超越 BigGAN-deep，多样性更好","b":"GAN 是图像生成主流，扩散模型被认为质量不足","f":"标志扩散模型成为主流，加速 GAN 到 Diffusion 迁移","x":"需额外训练分类器；采样仍较慢"},
+{"p":"关键性突破","d":"扩散模型/图像生成","t":"Classifier-Free Diffusion Guidance","a":"Ho & Salimans (Google)","y":2022,"c":"无需分类器的引导采样，核心技术","l":"https://arxiv.org/abs/2207.12598","q":"分类器引导需额外训练分类器，限制灵活性","m":"同时训练有/无条件去噪，采样时线性组合两者输出","r":"无需分类器即可引导，效果更好且灵活","b":"分类器引导依赖额外分类器，仅支持类别条件","f":"成为几乎所有后续 T2I 模型的核心采样技术","x":"推理计算翻倍；引导强度需手动调节"},
+{"p":"关键性突破","d":"扩散模型/图像生成","t":"DALL-E 2 (Hierarchical Text-Conditional Image Generation)","a":"Ramesh et al. (OpenAI)","y":2022,"c":"CLIP 驱动 T2I 里程碑","l":"https://arxiv.org/abs/2204.06125","q":"如何利用视觉-语言理解来生成图像","m":"CLIP 文本编码 - Prior 生成图像嵌入 - 扩散解码器生成图像","r":"高质量 T2I，支持图像编辑和变体","b":"T2I 质量有限，生成模型与理解模型脱节","f":"里程碑 T2I 产品，推动 AIGC 走向公众","x":"文字渲染差；复杂组合语义不足；闭源"},
+{"p":"关键性突破","d":"扩散模型/图像生成","t":"Imagen: Photorealistic Text-to-Image Diffusion","a":"Saharia et al. (Google)","y":2022,"c":"纯文本编码器(T5)驱动高质量 T2I","l":"https://arxiv.org/abs/2205.11487","q":"T2I 中文本理解和图像质量的权衡","m":"大型冻结 T5-XXL + 级联扩散模型（64-256-1024）","r":"证明文本编码器比图像架构更重要","b":"多数方法用 CLIP 编码器，文本理解存在瓶颈","f":"揭示文本编码器在 T2I 中的关键性","x":"未开源；级联架构复杂"},
+{"p":"关键性突破","d":"扩散模型/图像生成","t":"High-Resolution Image Synthesis with Latent Diffusion (LDM)","a":"Rombach et al. (LMU Munich)","y":2022,"c":"潜空间扩散，降低计算成本约 1000 倍","l":"https://arxiv.org/abs/2112.10752","q":"像素空间扩散计算成本极高","m":"先训练 VAE 压缩到潜空间，在潜空间中执行扩散","r":"计算成本降低约 1000 倍，质量保持","b":"像素空间扩散计算量巨大，消费级硬件无法运行","f":"使扩散模型民主化，催生 Stable Diffusion 开源生态","x":"VAE 压缩损失细节（人脸/文字）；潜空间维度受限"},
+{"p":"关键性突破","d":"扩散模型/图像生成","t":"Scalable Diffusion Models with Transformers (DiT)","a":"Peebles & Xie (UC Berkeley/NYU)","y":2023,"c":"Transformer 替代 U-Net，可扩展性突破","l":"https://arxiv.org/abs/2212.09748","q":"U-Net 架构可扩展性有限","m":"Transformer 替代 U-Net 作为扩散去噪骨干","r":"遵循 Scaling Laws，模型越大越好","b":"U-Net 难以像 Transformer 平滑扩展","f":"成为 Sora 等视频模型的架构基础","x":"缺乏多尺度归纳偏置；训练成本随规模显著增长"},
+{"p":"关键性突破","d":"多模态/跨模态","t":"Flamingo: a Visual Language Model for Few-Shot Learning","a":"Alayrac et al. (DeepMind)","y":2022,"c":"少样本多模态学习，视觉对话","l":"https://arxiv.org/abs/2204.14198","q":"如何让 VLM 具备少样本学习能力","m":"冻结视觉编码器和 LLM，插入 Perceiver Resampler + 交叉注意力","r":"16 项视觉-语言基准少样本 SOTA","b":"多模态模型缺乏 ICL 能力","f":"将 ICL 扩展到多模态，启发后续 VLM 设计","x":"闭源；视觉理解受限于冻结编码器"},
+{"p":"关键性突破","d":"多模态/跨模态","t":"GPT-4V(ision) System Card","a":"OpenAI","y":2023,"c":"原生多模态理解，视觉推理能力","l":"https://openai.com/index/gpt-4v-system-card/","q":"LLM 缺乏视觉理解能力","m":"原生多模态架构（具体未公开），图文交替输入","r":"展现强大的视觉推理和理解能力","b":"视觉理解和语言推理相互割裂","f":"推动多模态 AI 商业化，设立 VLM 标杆","x":"闭源；空间推理和计数不足"},
+{"p":"关键性突破","d":"多模态/跨模态","t":"Gemini: A Family of Highly Capable Multimodal Models","a":"Google DeepMind","y":2023,"c":"原生多模态架构，统一编码器","l":"https://arxiv.org/abs/2312.11805","q":"多模态能力由模块拼接，非原生一体化","m":"从头在多模态数据联合预训练（文本+图像+音频+视频）","r":"多项多模态基准 SOTA","b":"主流方法是将视觉编码器接到 LLM 上","f":"展示原生多模态架构的优越性","x":"闭源；部分基准存在争议；视频理解有限"},
+{"p":"关键性突破","d":"多模态/跨模态","t":"Segment Anything Model (SAM)","a":"Kirillov et al. (Meta)","y":2023,"c":"通用分割基础模型，SA-1B 数据集","l":"https://arxiv.org/abs/2304.02643","q":"图像分割缺乏通用基础模型","m":"SA-1B 数据集（11 亿掩码）+ Prompt-able 分割架构","r":"零样本分割能力强大，泛化各类场景","b":"分割模型针对特定数据集，泛化差","f":"成为视觉基础模型范式之一","x":"不支持语义标签；细粒度边缘不精确；视频处理弱"},
+{"p":"关键性突破","d":"声音生成","t":"AudioLM: a Language Modeling Approach to Audio Generation","a":"Borsos et al. (Google)","y":2022,"c":"LM 范式生成音频，长序列一致性","l":"https://arxiv.org/abs/2209.03143","q":"音频生成缺乏长时间语义连贯性","m":"将音频映射为离散 token，语言模型方式自回归生成","r":"生成音频在语义和声学上均保持长时一致性","b":"音频生成多在连续空间，长时语义一致性差","f":"将 LM 范式引入音频，启发 VALL-E、MusicGen 等","x":"自回归生成慢；对罕见音频泛化有限"},
+{"p":"关键性突破","d":"声音生成","t":"Whisper: Robust Speech Recognition via Large-Scale Weak Supervision","a":"Radford et al. (OpenAI)","y":2022,"c":"大规模弱监督 ASR，多语言通用","l":"https://arxiv.org/abs/2212.04356","q":"ASR 对噪声、口音、多语言鲁棒性不足","m":"68 万小时弱监督多语言数据训练 encoder-decoder Transformer","r":"多语言识别鲁棒性接近人类","b":"ASR 在分布外数据上性能急剧下降","f":"提供通用鲁棒的语音识别基线","x":"长音频需分段；低资源语言效果差；推理成本高"},
+{"p":"关键性突破","d":"声音生成","t":"VALL-E: Neural Codec Language Models for Zero-Shot TTS","a":"Wang et al. (Microsoft)","y":2023,"c":"零样本语音克隆，离散 token 表示","l":"https://arxiv.org/abs/2301.02111","q":"语音合成需要长时间说话人数据微调","m":"EnCodec 离散化语音 + GPT 风格模型从文本+3秒参考音频生成","r":"首次实现零样本语音克隆","b":"TTS 个性化需大量目标说话人数据","f":"开创零样本 TTS 方向","x":"偶有音质问题；零样本克隆存在安全风险"},
+{"p":"关键性突破","d":"视频生成","t":"CogVideo: Large-scale Pretraining for Text-to-Video","a":"Hong et al. (Tsinghua/Zhipu)","y":2022,"c":"大规模 T2V 预训练早期探索","l":"https://arxiv.org/abs/2205.15868","q":"T2V 生成质量差、规模小","m":"在 CogView2(T2I)基础上扩展时间维度，大规模预训练","r":"较早的大规模 T2V 模型，展示可行性","b":"视频生成停留在小分辨率、短时长","f":"较早期大规模 T2V 探索，为 CogVideoX 奠基","x":"质量与 Sora 差距大；运动幅度有限"},
+{"p":"关键性突破","d":"视频生成","t":"Sora: Video Generation Models as World Simulators","a":"OpenAI","y":2024,"c":"长时视频生成，世界模拟器定位","l":"https://openai.com/index/video-generation-models-as-world-simulators/","q":"视频生成的长时连贯性和物理世界理解","m":"Spacetime patches + DiT + 大规模视频-文本数据训练","r":"最长 60 秒高质量视频，展示部分物理规律理解","b":"视频生成时长短、分辨率低、物理不一致","f":"重新定义视频生成质量标准，提出世界模拟器概念","x":"物理理解不完美；未开源；生成成本极高"},
+{"p":"关键性突破","d":"AI Agent","t":"ReAct: Synergizing Reasoning and Acting in LMs","a":"Yao et al. (Princeton/Google)","y":2022,"c":"推理+行动交替范式，Agent 奠基工作","l":"https://arxiv.org/abs/2210.03629","q":"LLM 只能生成文本，无法与外部世界交互","m":"推理和行动交替执行，LLM 生成思考和工具调用","r":"在 QA 和决策任务上显著优于纯推理或纯行动","b":"LLM 应用局限于文本生成，缺乏交互能力","f":"奠定 LLM Agent 基本框架，启发 AutoGPT、LangChain","x":"依赖指令遵循能力；错误传播累积；工具定义需人工设计"},
+{"p":"优化雕花","d":"大语言模型","t":"LoRA: Low-Rank Adaptation of Large Language Models","a":"Hu et al. (Microsoft)","y":2021,"c":"参数高效微调，降低部署成本","l":"https://arxiv.org/abs/2106.09685","q":"全参数微调大模型需要巨大显存和计算","m":"冻结预训练权重，每层注入低秩分解矩阵 (AxB)，仅训练低秩部分","r":"约 0.01% 参数量达到全微调约 95-100% 性能","b":"微调需完整梯度和优化器状态，显存严重不足","f":"成为最广泛使用的参数高效微调方法","x":"秩选择需调参；某些任务不如全微调；多 LoRA 合并有风险"},
+{"p":"优化雕花","d":"大语言模型","t":"FlashAttention: Fast and Memory-Efficient Exact Attention","a":"Dao et al. (Stanford)","y":2022,"c":"IO 优化，加速训练推理","l":"https://arxiv.org/abs/2205.14135","q":"自注意力瓶颈在内存访问而非计算","m":"利用 GPU 内存层级(SRAM/HBM)分块计算，避免大量读写","r":"2-4倍加速，5-20倍节省内存，结果精确一致","b":"注意力优化关注计算复杂度，忽视 IO 瓶颈","f":"成为 LLM 训练和推理的标配基础设施","x":"与硬件深度绑定，移植性有限；部分注意力变体不兼容"},
+{"p":"优化雕花","d":"大语言模型","t":"Self-Consistency Improves Chain of Thought Reasoning","a":"Wang et al. (Google)","y":2022,"c":"多路径投票提升推理准确性","l":"https://arxiv.org/abs/2203.11171","q":"CoT 单次采样容易产生错误推理","m":"多次采样不同推理路径，多数投票作为最终答案","r":"数学推理任务上显著提升 CoT 准确率","b":"CoT 单条推理链不可靠，无纠错机制","f":"提供简单有效的推理增强策略","x":"成本线性增加；对开放式生成不适用"},
+{"p":"优化雕花","d":"大语言模型","t":"QLoRA: Efficient Finetuning of Quantized LLMs","a":"Dettmers et al. (UW)","y":2023,"c":"4bit 量化微调，单 GPU 训练大模型","l":"https://arxiv.org/abs/2305.14314","q":"即使 LoRA 也需较大显存加载基座","m":"4-bit NormalFloat 量化 + LoRA 微调 + 分页优化器","r":"单张 48GB GPU 微调 65B 模型，接近全精度","b":"消费级 GPU 无法加载和微调大型模型","f":"进一步降低微调门槛，惠及个人开发者","x":"推理速度受影响；极端压缩下某些能力损失"},
+{"p":"优化雕花","d":"大语言模型","t":"Direct Preference Optimization (DPO)","a":"Rafailov et al. (Stanford)","y":2023,"c":"去掉 reward model，简化 RLHF","l":"https://arxiv.org/abs/2305.18290","q":"RLHF 中 PPO 训练复杂、不稳定","m":"将奖励函数隐式表达为策略函数，转化为对比损失","r":"SFT 级别简单性实现 RLHF 级别对齐","b":"RLHF 需分别训练奖励和策略模型，流程复杂","f":"大幅简化对齐流程，被广泛采用","x":"偏好数据质量关键；可能过度优化；不如 PPO 灵活"},
+{"p":"优化雕花","d":"大语言模型","t":"Mixtral of Experts","a":"Jiang et al. (Mistral AI)","y":2024,"c":"稀疏 MoE 架构，效率质量平衡","l":"https://arxiv.org/abs/2401.04088","q":"稠密模型计算成本与性能增长不成比例","m":"稀疏 MoE：8 专家选 2 激活，每层独立路由","r":"46.7B 总参数(12.9B激活)匹配 LLaMA 2 70B","b":"开源 MoE 少且效果不稳定","f":"验证 MoE 在开源社区的可行性","x":"显存需全部参数；路由不均衡；专家坍塌风险"},
+{"p":"优化雕花","d":"扩散模型/图像生成","t":"DPM-Solver: Fast ODE Solver for Diffusion Sampling","a":"Lu et al. (Tsinghua)","y":2022,"c":"加速采样，减少推理步数","l":"https://arxiv.org/abs/2206.00927","q":"扩散模型采样步数多、推理慢","m":"高阶 ODE 求解器加速扩散 ODE 求解","r":"10-20 步即达 1000 步效果","b":"DDPM 原始采样需数百至上千步","f":"大幅加速扩散模型推理","x":"极少步数仍有质量损失"},
+{"p":"优化雕花","d":"扩散模型/图像生成","t":"ControlNet: Adding Conditional Control to T2I Diffusion","a":"Zhang & Agrawala (Stanford)","y":2023,"c":"精确可控生成，保持预训练权重","l":"https://arxiv.org/abs/2302.05543","q":"T2I 缺乏精确空间控制","m":"克隆 SD 编码器添加条件输入（边缘/深度/姿态），零卷积连接","r":"精确可控生成，保持原模型质量","b":"文本描述无法精确指定空间布局","f":"成为可控生成标准方案","x":"每种条件需单独训练；多条件组合不稳定"},
+{"p":"优化雕花","d":"扩散模型/图像生成","t":"Consistency Models","a":"Song et al. (OpenAI)","y":2023,"c":"单步生成，极速采样","l":"https://arxiv.org/abs/2303.01469","q":"扩散模型需多步迭代采样","m":"学习 ODE 轨迹任意点到终点的映射，实现单步生成","r":"单步生成合理图像，多步进一步提升","b":"扩散模型无法像 GAN 单步生成","f":"开辟非迭代扩散生成新方向","x":"单步质量不如多步；训练不够稳定"},
+{"p":"优化雕花","d":"扩散模型/图像生成","t":"SDXL: Improving Latent Diffusion for High-Res Image Synthesis","a":"Podell et al. (Stability AI)","y":2023,"c":"架构工程优化，提升生成质量","l":"https://arxiv.org/abs/2307.01952","q":"SD 1.x 生成质量和分辨率有限","m":"更大 U-Net + 双文本编码器 + Refiner 二阶段","r":"1024x1024 原生分辨率，质量显著提升","b":"开源扩散模型质量落后于闭源产品","f":"缩小开源与闭源 T2I 差距","x":"计算成本更高；Refiner 增加复杂度"},
+{"p":"优化雕花","d":"扩散模型/图像生成","t":"Latent Consistency Models","a":"Luo et al. (Tsinghua)","y":2023,"c":"少步蒸馏，实时生成","l":"https://arxiv.org/abs/2310.04378","q":"Consistency Models 在潜空间不够稳定","m":"潜空间中蒸馏一致性映射 (LCD)","r":"2-4 步高质量图像，速度提升 10 倍以上","b":"Consistency Models 在 LDM 上效果有限","f":"使扩散模型达到近实时速度","x":"极端少步有质量损失；依赖教师模型"},
+{"p":"优化雕花","d":"多模态/跨模态","t":"LLaVA: Large Language and Vision Assistant","a":"Liu et al. (UW/Microsoft)","y":2023,"c":"指令微调多模态，数据高效","l":"https://arxiv.org/abs/2304.08485","q":"构建 VLM 数据成本高、流程复杂","m":"CLIP + 线性投影 + LLaMA，用 GPT-4 生成指令数据微调","r":"极少数据和简单架构达到接近 GPT-4V 效果","b":"VLM 训练需大量人工标注多模态数据","f":"提供高效构建 VLM 的范式，催生大量变体","x":"单图理解为主；细粒度视觉推理不足"},
+{"p":"优化雕花","d":"多模态/跨模态","t":"Depth Anything","a":"Yang et al. (HKU/TikTok)","y":2024,"c":"零样本单目深度估计","l":"https://arxiv.org/abs/2401.10891","q":"单目深度估计泛化不足","m":"大规模未标注数据自训练 + DINOv2 + 标注数据联合优化","r":"零样本深度估计多基准 SOTA","b":"深度估计对分布外场景泛化差","f":"提供通用深度感知基础模型","x":"绝对深度精度有限；室内外迁移有差距"},
+{"p":"优化雕花","d":"声音生成","t":"FastSpeech 2: Fast and High-Quality End-to-End TTS","a":"Ren et al. (Zhejiang/Microsoft)","y":2021,"c":"非自回归 TTS，并行推理","l":"https://arxiv.org/abs/2006.04558","q":"自回归 TTS 推理慢且有跳词/重复","m":"非自回归 + 变分信息提取（时长/音高/能量）直接预测","r":"推理大幅加速，质量与自回归持平","b":"自回归 TTS 注意力不稳定，推理串行","f":"推动非自回归 TTS 成为主流","x":"需外部对齐器；表现力略逊于自回归"},
+{"p":"优化雕花","d":"声音生成","t":"Bark: Text-Prompted Generative Audio Model","a":"Suno AI","y":2023,"c":"开源多语言 TTS，情感韵律","l":"https://github.com/suno-ai/bark","q":"开源 TTS 缺乏情感和多语言能力","m":"GPT 风格多阶段自回归，生成语义/粗/细声学 token","r":"支持多语言、笑声等非语言表达","b":"开源 TTS 多单语言无情感","f":"提供功能丰富的开源 TTS","x":"生成不稳定；音质不如商业方案；无正式论文"},
+{"p":"优化雕花","d":"声音生成","t":"MusicGen: Simple and Controllable Music Generation","a":"Copet et al. (Meta)","y":2023,"c":"文本生成音乐，条件控制","l":"https://arxiv.org/abs/2306.05284","q":"音乐生成缺乏简洁统一方法","m":"单阶段 Transformer + codebook 交错模式，文本/旋律条件","r":"单模型完成多种音乐生成任务","b":"音乐生成多为多阶段，控制手段有限","f":"提供简洁高效的音乐生成基线","x":"长度有限；风格多样性不足"},
+{"p":"优化雕花","d":"视频生成","t":"VideoPoet: A Large Language Model for Zero-Shot Video Generation","a":"Kondratyuk et al. (Google)","y":2024,"c":"LLM 统一框架处理多种视频任务","l":"https://arxiv.org/abs/2312.14125","q":"视频不同任务各需独立模型","m":"LLM 统一框架处理多种视频 token 任务（T2V、I2V 等）","r":"单一模型实现零样本多任务视频生成","b":"视频生成子任务分散缺乏统一方法","f":"展示 LLM 范式在视频生成中的灵活性","x":"质量不如专用模型；分辨率和时长受限"},
+{"p":"优化雕花","d":"AI Agent","t":"Toolformer: Language Models Can Teach Themselves to Use Tools","a":"Schick et al. (Meta)","y":2023,"c":"LLM 自主学习使用外部工具 API","l":"https://arxiv.org/abs/2302.04761","q":"LLM 无法自主决定何时如何使用工具","m":"自监督让 LLM 学习在文本中插入 API 调用","r":"自主学会在需要时调用工具，提升事实性和计算能力","b":"工具使用需人工设计 prompt，LLM 不能自主判断","f":"展示 LLM 自主学习使用工具的可行性","x":"仅支持简单 API；工具集固定；对话场景支持有限"}
+]`);
+
+let showExtra = false;
+let fp = "all", fd = "all", sq = "";
+const pOrd = {"范式奠基类":0,"关键性突破":1,"优化雕花":2};
+const pCls = {"范式奠基类":"p-f","关键性突破":"p-b","优化雕花":"p-o"};
+const dCls = {"大语言模型":"d-llm","扩散模型/图像生成":"d-diff","多模态/跨模态":"d-mm","声音生成":"d-aud","视频生成":"d-vid","AI Agent":"d-agent"};
+const pIco = {"范式奠基类":"🏛️","关键性突破":"🚀","优化雕花":"🔧"};
+const extLabels = ["解决了什么问题","方法与手段","结论","发表前学术界的不足","发表后可能的贡献","论文本身的不足"];
+const extKeys = ["q","m","r","b","f","x"];
+
+function buildHead() {
+    var h = '<tr><th>#</th><th>优先级</th><th>方向</th><th>论文标题</th><th>作者/团队</th><th>年份</th><th>核心贡献</th><th>链接</th>';
+    if (showExtra) {
+        for (var i = 0; i < extLabels.length; i++) {
+            h += '<th class="ext-head">' + extLabels[i] + '</th>';
+        }
+    }
+    h += '</tr>';
+    document.getElementById("tableHead").innerHTML = h;
+}
+
+function render() {
+    buildHead();
+    var q = sq.toLowerCase();
+    var list = P.filter(function(p) {
+        if (fp !== "all" && p.p !== fp) return false;
+        if (fd !== "all" && p.d !== fd) return false;
+        if (q) {
+            var s = (p.t + " " + p.a + " " + p.c + " " + p.d + " " + (p.q||"") + " " + (p.m||"") + " " + (p.r||"") + " " + (p.b||"") + " " + (p.f||"") + " " + (p.x||"")).toLowerCase();
+            if (s.indexOf(q) === -1) return false;
+        }
+        return true;
+    }).sort(function(a, b) {
+        var pi = pOrd[a.p] - pOrd[b.p];
+        if (pi) return pi;
+        if (a.d < b.d) return -1;
+        if (a.d > b.d) return 1;
+        return a.y - b.y;
+    });
+
+    var totalCols = showExtra ? 14 : 8;
+    var tb = document.getElementById("tb");
+    if (!list.length) {
+        tb.innerHTML = '<tr><td colspan="' + totalCols + '" class="empty-state">没有匹配的论文</td></tr>';
+        return;
+    }
+
+    var html = "", lastP = "", idx = 0;
+    for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        if (p.p !== lastP) {
+            html += '<tr class="section-header"><td colspan="' + totalCols + '">' + pIco[p.p] + ' ' + p.p + '</td></tr>';
+            lastP = p.p;
+        }
+        idx++;
+        html += '<tr>';
+        html += '<td style="color:#999;text-align:center">' + idx + '</td>';
+        html += '<td><span class="priority-tag ' + pCls[p.p] + '">' + p.p + '</span></td>';
+        html += '<td><span class="dir-tag ' + (dCls[p.d]||"d-llm") + '">' + p.d + '</span></td>';
+        html += '<td><span class="paper-title">' + p.t + '</span></td>';
+        html += '<td>' + p.a + '</td>';
+        html += '<td style="text-align:center;font-weight:600">' + p.y + '</td>';
+        html += '<td style="color:#555;font-size:.77rem">' + p.c + '</td>';
+        html += '<td style="text-align:center">' + (p.l ? '<a class="paper-link" href="' + p.l + '" target="_blank">📄 链接</a>' : '<span style="color:#ccc">—</span>') + '</td>';
+        if (showExtra) {
+            for (var j = 0; j < extKeys.length; j++) {
+                html += '<td class="ext">' + (p[extKeys[j]] || '—') + '</td>';
+            }
+        }
+        html += '</tr>';
+    }
+    tb.innerHTML = html;
+}
+
+document.getElementById("toggleBtn").addEventListener("click", function() {
+    showExtra = !showExtra;
+    this.textContent = showExtra ? "📖 折叠论文详情" : "📖 展开论文详情";
+    this.classList.toggle("active", showExtra);
+    render();
+});
+
+document.querySelectorAll(".fbtn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+        var ft = this.dataset.f, fv = this.dataset.v;
+        if (ft === "p") fp = fv; else fd = fv;
+        document.querySelectorAll('.fbtn[data-f="' + ft + '"]').forEach(function(b) { b.classList.remove("active"); });
+        this.classList.add("active");
+        render();
+    });
+});
+
+document.getElementById("si").addEventListener("input", function() { sq = this.value.trim(); render(); });
+
+function stats() {
+    document.getElementById("tot").textContent = P.length;
+    document.getElementById("c1").textContent = P.filter(function(p) { return p.p === "范式奠基类"; }).length;
+    document.getElementById("c2").textContent = P.filter(function(p) { return p.p === "关键性突破"; }).length;
+    document.getElementById("c3").textContent = P.filter(function(p) { return p.p === "优化雕花"; }).length;
+    var dirs = {};
+    P.forEach(function(p) { dirs[p.d] = true; });
+    document.getElementById("c4").textContent = Object.keys(dirs).length;
+}
+stats();
+render();
+</script>
+</body>
+</html>
